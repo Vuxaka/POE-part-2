@@ -3,18 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.registerandlogin;
-
+import java.util.ArrayList;
 import java.util.Scanner;
-
+import java.util.List;
 /**
  *
  * @author RC_Student_lab
  */
 public class Login {
-    
-    /**
-     * @param args the command line arguments
-     */
     
     String Username;
     String Password;
@@ -23,131 +19,174 @@ public class Login {
     String username;
     String password;
     
+    
     public boolean checkUsername(){
-        //This method will check the username complexity if it has an underscore or not
-        boolean check = false;
-        for(int i = 0; i<Username.length(); i++){
-            if(Username.length() <=5){
-                
-                if((int)Username.charAt(i) ==95)
-                    check = true;
-            }
-        }
-        return check;
+        //Check if the username contains underscore and is not too short
+        return Username.contains("_") && Username.length() > 5;
     }
     
-    public boolean checkPasswordComplexity(){
-        //This method will check if the password has a capital letter, a number and a special character
-        boolean CapitalLetter = false;
-        boolean Number = false;
-        boolean SpecialCharacter = false;
-        for(int i = 0; i<Password.length(); i++){
-            if(Password.length() >= 8){
-                if((int)Password.charAt(i) >65 &&(int)Password.charAt(i)<65)
-                    CapitalLetter = true;
+    
+    public boolean checkPasswordComplexity() {
+        // Check for at least one capital letter, number, and special character
+        boolean hasCapital = false, hasNumber = false, hasSpecial = false;
+        
+        if (Password.length() >= 8) {
+            for (char c : Password.toCharArray()) {
+                if (Character.isUpperCase(c)) hasCapital = true;
+                if (Character.isDigit(c)) hasNumber = true;
+                if (Character.isLetterOrDigit(c)) hasSpecial = true;
             }
-            if((int)Password.charAt(i) >=48 &&(int)Password.charAt(i) <=48)
-                Number = true;
         }
-        if((int)Password.charAt(0) >=33 &&(int)Password.charAt(0)<=33)
-            SpecialCharacter = true;
         
-        return CapitalLetter && Number && SpecialCharacter;
-    }
-    public String registerUser(){
-        
-        if(checkUsername()==true){
-            System.out.println("Username captured successfully");
-        }else{
-            System.out.println("Username is incorrectly formatted");
-        }
-        if(checkPasswordComplexity()==true){
-            System.out.println("Password successfully captured");
-        }else{
-            System.out.println("Password is not correct");  
-    }
-        if(checkUsername()==true && (checkPasswordComplexity()==true)){
-            System.out.println("The above requirements have been met");
-            
-        }
-        if(checkPasswordComplexity()==false){
-            System.out.println("The Password does not meet the requirements");
-            
-        }
-        if(checkUsername()==false){
-            System.out.println("The username is incorrectly formatted");
-            
-        }    
-        
-        return(" ");
-      
-}
-   public boolean loginUser(){
-       boolean Compare = false;
-       // This method will compare the register login username and password
-        return false;
-        
-       
-   }
+        return hasCapital && hasNumber && hasSpecial;
+            }
+    public boolean loginUser(String enteredUsername, String enteredPassword) {
+        // Check if entered credentials match registered credentials
+        return username.equals(Username) && password.equals(Password);
    
-   String returnLoginStatus(){
-       //this method will tell the user if they managed to login or not
-       
-       if(loginUser()==true){
-           
-           System.out.println("Login successful");
-           {
-           System.out.println("welcome"+" "+FirstName +" "+LastName +" "+ Username+" "+Password+ " ");
-           }
-       }
-       
-       else{
-           
-           System.out.println("A failed login");
-           System.out.println("Username or Password incorrect, please try again");
-       }
-       
-       return("");
-   }
+        }
     
-    public static void main(String[] args){
-           //This will allow the user to be able to respond to the comparision
+    public String returnLoginStatus() {
+        if (loginUser(username, password)) {
+            System.out.println("Login successful");
+            return "Welcome " + FirstName + " " + LastName + "!";
+        }else{
+            System.out.println("A failed login");
+            return "Username or Password incorrect, please try again.";
+        }
+    }
+    
+     public String registerUser(){
+         if (checkUsername() && checkPasswordComplexity()) {
+             return "Registration successful!";
+         }else {
+             String errorMsg = "";
+             if (!checkUsername()) errorMsg += "Username is incorrectly formatted.\n";
+             if (!checkPasswordComplexity()) errorMsg += "Password does not meet complexity requirements.\n";
+             return errorMsg + "Registration failed.";
+         }
+     }
+    
+    
+    public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        
-        // this will be used as access methods and variables of the login register
-        
         Login method = new Login();
         
-      //prompt the user to enter their first name
-            System.out.println("Please enter your first name");
-            method.FirstName = input.next();
-            //prompt the user to enter their last name
-            System.out.println("Please enter your last name");
-            method.LastName = input.next();
-            //prompt the user to create a username
-            System.out.println("Create username");
-            method.Username = input.next();
-            //prompt the user to create a password
-            System.out.println("Create password");
-            method.Password = input.next();
-            //this will inform the user if they are registered or not
-            System.out.println(method.registerUser());
-            //if the username and password are correct this will allow the user to register
-            if(method.checkUsername()==true & (method.checkPasswordComplexity()==true)){
-                
-            }
-                //prompt the user to login with information they registered with
-                System.out.println("Please enter your username");
-                method.username = input.next();
-                //prompt the user to login with the registered password
-                System.out.println("Please enter your password");
-                method.password = input.next();
-                //this will tell the user if they are registered or not
-                System.out.println(method.returnLoginStatus());
-                
-            }
+        
+        //Registration process
+        System.out.println("Please enter your first name:");
+        method.FirstName = input.nextLine();
+        System.out.println("Please enter your last name:");
+        method.LastName = input.nextLine();
+        System.out.println("Create username:");
+        method.username = input.nextLine();
+        System.out.println("Create password:");
+        method.password = input.nextLine();
+        
+        // Register user
+        String registrationResult = method.registerUser();
+        System.out.println(registrationResult);
+        if (!registrationResult.equals("Registration successful!")) {
+            input.close();
+            return; //Exit if registration fails
+        }
+            
+        
+        // Login process 
+        System.out.println("Please enetr your username to log in:");
+        String enteredUsername = input.nextLine();
+        System.out.println("Please enter your password");
+        String enteredPassword = input.nextLine();
+        
+        if (method.loginUser(enteredUsername, enteredPassword)) {
+            System.out.println("Login successful! Welcome to EasyKanban");
+            showMainMenu(input);
+            
+        } else {
+            System.out.println("Login failed. Incorrect username or password.");
+            
+        } 
+        
+        input.close();
+    }
+        
+    // Main menu method        
+    public static void showMainMenu(Scanner input) {
+        List<Task> tasks = new ArrayList<>();
+        int totalHours = 0;
+        boolean quit = false;
         
         
-    } 
-    
+        while (!quit) {
+            System.out.println("\nChoose an option:\n1) Add tasks\n2 Show report\n3) Quit ");
+            int option = input.nextInt();
+            input.nextLine(); // Consume newline
+        
+   
+                switch (option) {
+                    case 1:
+                        System.out.println("How many tasks would you like to add?");
+                        int numTasks = input.nextInt();
+                        input.nextLine(); // Consume newline
+                        
+                        for (int i = 0; i < numTasks; i++){
+                            //Get task details from user
+                            System.out.println("Enter task name:");
+                            String taskName = input.nextLine();
+                            System.out.println("Enter deveeloper's first name");
+                            String devFirstName = input.nextLine();
+                            System.out.println("Enter developer's last name");
+                            String devLastName = input.nextLine();
+                            System.out.println("Enter task duration in hours");
+                            int taskDuration = input.nextInt();
+                            input.nextLine(); // Consume newline
+                            System.out.println("Enter task description");
+                            String taskDescription = input.nextLine();
+                            System.out.println("Enter task status [To Do, Doing, Done]:");
+                            String taskStatus = input.nextLine();
+                            
+                            
+                            // Create new Task object
+                            Task task = new Task(taskName, devFirstName, devLastName, taskDuration, taskDescription, taskStatus);
+                            task.printTaskDetails();
+                            
+                            if (task.checkTaskDescription()) {
+                                tasks.add((task));
+                                totalHours += task.getDuration();
+                            } else {
+                                System.out.println("Task descriptioninvalid. Task not added.");
+                            }
+                        }    
+                            break;
+                            
+                            
+                    case 2: 
+                        System.out.println("Coming Soon");
+                        break;
+                        
+                        
+                    case 3:
+                        quit = true;
+                        break;
+                        
+                        
+                    default:
+                        System.out.println("Invalid option. Please try again");
+                
+                            }
+                                   
+        }    
+                            
+        System.out.println("Total task duration:" + totalHours + " hours");
+                            
+                            
+                            
+                            
+                            
+                            
+                            }
+                            
+                        }
+                      
+     
 
